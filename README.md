@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a production-oriented [Next.js](https://nextjs.org) App Router project for a football dashboard, shared AI chat orchestration, and a LINE reply bot flow on Vercel.
+
+## Features
+
+- Public read-only football dashboard with live fixtures and standings
+- Match detail page with timeline and key stats
+- Web chat calling a shared orchestration layer
+- LINE webhook endpoint for text replies
+- API-Football proxy endpoints
+- z.ai integration with fallback summaries when credentials are unavailable
+- In-memory context plus optional Postgres persistence via `DATABASE_URL`
+- Vitest coverage for prompting, language detection, web chat, and LINE webhook flows
 
 ## Getting Started
 
-First, run the development server:
+Copy `.env.example` to `.env.local` and fill in the providers you want to enable.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+API_FOOTBALL_KEY=
+ZAI_API_KEY=
+ZAI_MODEL=glm-4.7
+LINE_CHANNEL_ACCESS_TOKEN=
+LINE_CHANNEL_SECRET=
+DATABASE_URL=
+```
 
-## Learn More
+If `API_FOOTBALL_KEY` or `ZAI_API_KEY` are omitted, the app still runs with mock football data and deterministic fallback answers so the UI and tests stay usable.
 
-To learn more about Next.js, take a look at the following resources:
+## API Routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `GET /api/football/live`
+- `GET /api/football/match/:id`
+- `GET /api/football/standings?league=39&season=2025`
+- `POST /api/chat`
+- `POST /api/line/webhook`
+- `GET /api/health`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Testing
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run test
+```
