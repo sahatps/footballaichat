@@ -470,12 +470,16 @@ export function getLiveFeedMeta(scope: LiveFeedScope) {
 export async function resolveMatchFromText(text: string, candidates?: LiveMatch[]) {
   const live = candidates ?? (await getLiveMatches("all-live")).matches;
   const query = text.toLowerCase();
+  const queryTokens = query.split(/[^a-z0-9]+/i).filter(Boolean);
 
   return (
     live.find((match) =>
-      [match.homeTeam.name, match.awayTeam.name, match.homeTeam.shortName, match.awayTeam.shortName]
+      [match.homeTeam.name, match.awayTeam.name]
         .filter(Boolean)
-        .some((name) => query.includes(name!.toLowerCase())),
+        .some((name) => query.includes(name.toLowerCase())) ||
+      [match.homeTeam.shortName, match.awayTeam.shortName]
+        .filter(Boolean)
+        .some((shortName) => queryTokens.includes(shortName.toLowerCase())),
     ) ?? null
   );
 }
