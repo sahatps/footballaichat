@@ -471,14 +471,15 @@ export async function resolveMatchFromText(text: string, candidates?: LiveMatch[
   const live = candidates ?? (await getLiveMatches("all-live")).matches;
   const query = text.toLowerCase();
   const queryTokens = query.split(/[^a-z0-9]+/i).filter(Boolean);
+  const isDefined = <T>(value: T | null | undefined): value is T => value != null;
 
   return (
     live.find((match) =>
       [match.homeTeam.name, match.awayTeam.name]
-        .filter(Boolean)
+        .filter(isDefined)
         .some((name) => query.includes(name.toLowerCase())) ||
       [match.homeTeam.shortName, match.awayTeam.shortName]
-        .filter(Boolean)
+        .filter(isDefined)
         .some((shortName) => queryTokens.includes(shortName.toLowerCase())),
     ) ?? null
   );
