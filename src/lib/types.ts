@@ -121,6 +121,14 @@ export type StandingsResult = {
   label: string;
 };
 
+export type IntegrationStatus = {
+  apiFootballKey: boolean;
+  zaiApiKey: boolean;
+  lineChannelAccessToken: boolean;
+  lineChannelSecret: boolean;
+  databaseUrl: boolean;
+};
+
 export type ConversationLog = {
   id: string;
   channel: Channel;

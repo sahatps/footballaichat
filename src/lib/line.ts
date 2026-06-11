@@ -24,6 +24,7 @@ export async function replyToLine(replyToken: string, message: string) {
   const config = getConfig();
 
   if (!config.LINE_CHANNEL_ACCESS_TOKEN) {
+    console.warn("[line] reply skipped because LINE_CHANNEL_ACCESS_TOKEN is missing");
     return { ok: false, skipped: true };
   }
 
@@ -43,6 +44,14 @@ export async function replyToLine(replyToken: string, message: string) {
       ],
     }),
   });
+
+  if (!response.ok) {
+    const details = await response.text().catch(() => "");
+    console.error("[line] reply request failed", {
+      status: response.status,
+      details,
+    });
+  }
 
   return {
     ok: response.ok,

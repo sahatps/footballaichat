@@ -38,11 +38,20 @@ describe("DashboardShell", () => {
             label: "Premier League snapshot",
           },
         }}
+        integrationStatus={{
+          apiFootballKey: true,
+          zaiApiKey: true,
+          lineChannelAccessToken: true,
+          lineChannelSecret: false,
+          databaseUrl: false,
+        }}
       />,
     );
 
     expect(screen.getAllByText("FIFA World Cup 2026").length).toBeGreaterThan(0);
     expect(screen.getByText("Mexico vs South Africa")).toBeInTheDocument();
+    expect(screen.getByText("API_FOOTBALL_KEY")).toBeInTheDocument();
+    expect(screen.getByText("LINE_CHANNEL_SECRET")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "All Live Matches" }));
 
