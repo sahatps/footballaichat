@@ -111,6 +111,28 @@ describe("answerFootballQuestion", () => {
     expect(explicitSwitch.answer).toContain("Barcelona");
   });
 
+  it("treats Thai team-list questions as overview requests instead of repeating the last match", async () => {
+    const sessionId = "line-thai-team-overview-session";
+
+    await answerFootballQuestion({
+      channel: "line",
+      sessionId,
+      message: "สรุปให้หน่อย",
+      fallbackLanguage: "th",
+    });
+
+    const response = await answerFootballQuestion({
+      channel: "line",
+      sessionId,
+      message: "มีทีมอะไรบ้าง",
+      fallbackLanguage: "th",
+    });
+
+    expect(response.needsMatchClarification).toBe(false);
+    expect(response.match).toBeUndefined();
+    expect(response.answer).not.toContain("Mexico นำ South Africa");
+  });
+
   it("does not confuse generic words with team short names", async () => {
     const response = await answerFootballQuestion({
       channel: "line",

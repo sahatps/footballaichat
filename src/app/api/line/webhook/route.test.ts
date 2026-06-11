@@ -135,6 +135,40 @@ describe("POST /api/line/webhook", () => {
     expect(replySpy).toHaveBeenNthCalledWith(4, "reply-4", expect.not.stringContaining("Mexico นำ South Africa"));
     expect(replySpy).toHaveBeenNthCalledWith(5, "reply-5", expect.stringContaining("Barcelona"));
   });
+  it("answers Thai team-list prompts with an overview instead of the previous match summary", async () => {
+    const replySpy = vi.spyOn(lineModule, "replyToLine").mockResolvedValue({ ok: true, skipped: false });
+    const baseEvent = {
+      type: "message",
+      timestamp: Date.now(),
+      source: { userId: "user-team-list-1" },
+      message: {
+        id: "msg-team-list",
+        type: "text",
+      },
+    } as const;
+
+    await handleLineEvent({
+      ...baseEvent,
+      replyToken: "reply-team-1",
+      message: {
+        ...baseEvent.message,
+        text: "สรุปให้หน่อย",
+      },
+    });
+
+    await handleLineEvent({
+      ...baseEvent,
+      replyToken: "reply-team-2",
+      message: {
+        ...baseEvent.message,
+        text: "มีทีมอะไรบ้าง",
+      },
+    });
+
+    expect(replySpy).toHaveBeenNthCalledWith(1, "reply-team-1", expect.stringContaining("Mexico"));
+    expect(replySpy).toHaveBeenNthCalledWith(2, "reply-team-2", expect.not.stringContaining("Mexico นำ South Africa"));
+  });
+
   it("keeps LINE sessions isolated across different users", async () => {
     const replySpy = vi.spyOn(lineModule, "replyToLine").mockResolvedValue({ ok: true, skipped: false });
 
